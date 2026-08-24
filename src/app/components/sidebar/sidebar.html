@@ -1,0 +1,37 @@
+<div class="sidebar d-flex flex-column flex-shrink-0 p-3 bg-dark text-white shadow-lg">
+  <!-- Logotipo de SigoCartera -->
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none border-bottom border-secondary pb-3 w-100">
+    <div class="bg-primary text-white rounded px-2 py-1 me-2 fw-bold text-center brand-badge">SC</div>
+    <span class="fs-5 fw-bold tracking-wide text-light">SigoCartera</span>
+  </a>
+
+  <!-- Enlaces de Navegación del ERP -->
+  <ul class="nav nav-pills flex-column mb-auto mt-4 gap-2">
+    <li class="nav-item">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded-3 transition-all">
+        <i class="bi bi-speedometer2 fs-5"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/carga-excel" routerLinkActive="active" class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded-3 transition-all">
+        <i class="bi bi-file-earmark-excel fs-5 text-success-icon"></i>
+        <span>Carga Mensual</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Perfil de Usuario Local e Historial (Pie del Sidebar) -->
+  <div class="dropdown border-top border-secondary pt-3 mt-auto">
+    <div class="d-flex align-items-center text-white text-decoration-none">
+      <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-2 text-dark font-weight-bold" style="width: 32px; height: 32px;">
+        <i class="bi bi-person-fill text-white fs-6"></i>
+      </div>
+      <div class="d-flex flex-column text-start overflow-hidden">
+        <span class="fw-semibold small text-truncate text-light">Usuario Activo</span>
+        <span class="text-muted text-truncate" style="font-size: 0.75rem;">Rol: Operativo</span>
+      </div>
+    </div>
+  </div>
+</div>
+

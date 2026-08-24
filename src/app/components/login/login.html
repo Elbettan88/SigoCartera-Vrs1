@@ -1,0 +1,47 @@
+<div class="login-container">
+  <div class="card border-0 rounded-4">
+    <div class="card-body p-5">
+      
+      <!-- Encabezado -->
+      <div class="text-center mb-4">
+        <div class="brand-logo mb-2 d-inline-block bg-primary text-white rounded-3 px-3 py-2 fw-bold fs-4">
+          SC
+        </div>
+        <h2 class="fw-bold text-dark mb-1">SigoCartera</h2>
+        <p class="text-muted small">Sistema de Gestión y Antigüedad de Saldos</p>
+      </div>
+
+      <!-- Formulario -->
+      <form (ngSubmit)="onLogin()">
+        <div class="mb-3">
+          <label class="form-label text-secondary small fw-semibold">Perfil de Acceso</label>
+          <select class="form-select border-2" name="perfil" [(ngModel)]="perfil">
+            <option value="admin">Administrador (Carga de Datos)</option>
+            <option value="analista">Analista de Cobros (Consultas)</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-secondary small fw-semibold">Nombre de Usuario</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-2 border-end-0 text-muted"><i class="bi bi-person"></i></span>
+            <input type="text" name="usuario" [(ngModel)]="usuario" class="form-control border-2 border-start-0" placeholder="Ej: admin_local" required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label text-secondary small fw-semibold">Contraseña</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-2 border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+            <input type="password" name="contrasena" [(ngModel)]="contrasena" class="form-control border-2 border-start-0" placeholder="••••••••" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold shadow-sm">
+          Iniciar Sesión Local
+        </button>
+      </form>
+
+    </div>
+  </div>
+</div>

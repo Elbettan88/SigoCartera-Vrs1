@@ -1,0 +1,35 @@
+.login-container {
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle, #f8f9fa 0%, #e9ecef 100%);
+  display: flex;         // <-- Activa contenedor flexible
+  align-items: center;    // <-- Centra verticalmente
+  justify-content: center;// <-- Centra horizontalmente
+  padding: 1.5rem;
+}
+
+.card {
+  max-width: 420px;       // <-- Evita que se estire a los lados
+  width: 100%;            // <-- Mantiene adaptabilidad en móviles
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important; // Sombra elegante
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.brand-logo {
+  letter-spacing: 1px;
+  box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+}
+
+.form-control, .form-select {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  
+  &:focus {
+    border-color: #0d6efd;
+    box-shadow: none;
+  }
+}

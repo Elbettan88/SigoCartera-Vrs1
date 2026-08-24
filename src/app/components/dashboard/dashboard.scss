@@ -1,0 +1,59 @@
+.excel-table {
+  border: 1px solid #cbd5e1 !important;
+  th, td { border: 1px solid #cbd5e1 !important; padding: 0.6rem 0.5rem; }
+  .cell-cliente { min-width: 320px; }
+}
+
+// Botón estético estilo cuadradito de Excel [+] / [-]
+.btn-excel-toggle {
+  background: none;
+  border: none;
+  color: #475569;
+  padding: 0;
+  font-size: 1.05rem;
+  line-height: 1;
+  
+  &:hover { color: #0d6efd; }
+}
+
+.row-padre { background-color: #ffffff; }
+.row-hija { background-color: #f8fafc !important; }
+.bg-total { background-color: #f1f5f9 !important; }
+.font-mono { font-family: 'Consolas', monospace; font-size: 0.85rem; }
+.font-sans { font-family: system-ui, sans-serif; }
+.fs-8 { font-size: 0.72rem; }
+.fs-9 { font-size: 0.65rem; }
+.border-double { border-bottom: 3px double #0d6efd !important; }
+
+// MAQUETACIÓN DE SEMÁFOROS LED EN CÍRCULOS
+.led-semaforo {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.semaforo-verde { background-color: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.semaforo-amarillo { background-color: #eab308; box-shadow: 0 0 6px #eab308; }
+.semaforo-naranja { background-color: #f97316; box-shadow: 0 0 6px #f97316; }
+
+// El semáforo rojo parpadea por peligro crítico (+120 días vencido)
+.semaforo-rojo {
+  background-color: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+  animation: parpadeo-led 1.5s infinite;
+}
+
+@keyframes parpadeo-led {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-fade {
+  animation: fadeIn 0.2s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}

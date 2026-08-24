@@ -1,1 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
+// 1. Importación oficial de Bootstrap y sus iconos instalados localmente vía NPM
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+// 2. Ajustes estéticos globales para el ERP SigoCartera
+body {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; // Evita el scroll horizontal innecesario
+}

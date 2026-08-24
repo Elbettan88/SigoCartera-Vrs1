@@ -1,0 +1,39 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+
+  .brand-badge {
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.4);
+    font-size: 0.95rem;
+  }
+
+  .nav-link {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #ced4da !important;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff !important;
+    }
+
+    &.active {
+      background-color: #0d6efd !important;
+      color: #fff !important;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+    }
+  }
+
+  .text-success-icon {
+    color: #198754; // Color verde de Excel en el icono de carga
+  }
+
+  .transition-all {
+    transition: all 0.2s ease-in-out;
+  }
+}

@@ -1,0 +1,11 @@
+.content-wrapper {
+  margin-left: 260px; 
+  width: calc(100% - 260px);
+  transition: all 0.2s ease-in-out;
+
+  // Clase que se activa automáticamente solo cuando estamos en la pantalla de Login
+  &.login-full-width {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
