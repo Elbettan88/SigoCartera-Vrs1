@@ -1,9 +1,55 @@
-<div class="d-flex w-100">
-  <!-- El Sidebar solo se renderiza si mostrarSidebar es TRUE -->
-  <app-sidebar *ngIf="mostrarSidebar"></app-sidebar>
+<div class="d-flex min-vh-100 bg-light">
+  
+  <!-- BARRA LATERAL (SIDEBAR) CONTABLE -->
+  @if (mostrarSidebar()) {
+    <div class="bg-dark text-white border-end d-flex flex-column justify-content-between p-3" style="width: 260px; min-width: 260px;">
+      
+      <!-- SECCIÓN SUPERIOR: NAVEGACIÓN -->
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-4 pb-2 border-bottom border-secondary">
+          <i class="bi bi-shield-lock-fill text-primary fs-4"></i>
+          <span class="fw-bold fs-5 tracking-wide">SigoCartera</span>
+        </div>
+        
+        <ul class="nav nav-pills flex-column gap-1 small">
+          <li class="nav-item">
+            <a class="nav-link text-white d-flex align-items-center gap-2 py-2" routerLink="/dashboard" routerLinkActive="active bg-primary">
+              <i class="bi bi-grid-1x2-fill"></i> Panel Matriz Dinámica
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white d-flex align-items-center gap-2 py-2" routerLink="/carga-excel" routerLinkActive="active bg-primary">
+              <i class="bi bi-file-earmark-arrow-up-fill"></i> Carga Mensual Excel
+            </a>
+          </li>
+        </ul>
+      </div>
 
-  <!-- Añadimos una clase dinámica [class.login-full-width] si el Sidebar está oculto -->
-  <main class="content-wrapper flex-grow-1 bg-light min-vh-100" [class.login-full-width]="!mostrarSidebar">
+      <!-- SECCIÓN INFERIOR: IDENTIDAD DEL USUARIO Y LOGOUT -->
+      <div class="p-2 bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-between border border-secondary">
+        <div class="d-flex align-items-center gap-2 text-truncate me-2">
+          <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold small" style="width: 32px; height: 32px; min-width: 32px;">
+            A
+          </div>
+          <div class="text-truncate">
+            <!-- Renderiza dinámicamente el Administrador General -->
+            <span class="d-block fw-bold text-white small text-truncate">{{ usuarioNombre }}</span>
+            <span class="d-block text-muted font-mono" style="font-size: 0.65rem;">Sesión Segura</span>
+          </div>
+        </div>
+        
+        <!-- BOTÓN SOLICITADO: CERRAR SESIÓN EN EL SIDEBAR -->
+        <button type="button" (click)="ejecutarCerrarSesion()" class="btn btn-sm btn-outline-danger border-0 p-1.5 d-flex align-items-center justify-content-center rounded-circle" title="Cerrar Sesión">
+          <i class="bi bi-box-arrow-left fs-5"></i>
+        </button>
+      </div>
+
+    </div>
+  }
+
+  <!-- CONTENEDOR DE PANTALLAS DINÁMICAS (DASHBOARD / CARGA / LOGIN) -->
+  <div class="flex-grow-1 overflow-auto">
     <router-outlet></router-outlet>
-  </main>
+  </div>
+
 </div>

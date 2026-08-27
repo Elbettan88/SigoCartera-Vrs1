@@ -1,46 +1,87 @@
-<div class="login-container">
-  <div class="card border-0 rounded-4">
-    <div class="card-body p-5">
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light font-sans text-start">
+  <div class="row w-100 justify-content-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-3">
       
-      <!-- Encabezado -->
-      <div class="text-center mb-4">
-        <div class="brand-logo mb-2 d-inline-block bg-primary text-white rounded-3 px-3 py-2 fw-bold fs-4">
-          SC
+      <!-- CONTENEDOR CENTRAL DEL LOGIN -->
+      <div class="card shadow-lg border-0 rounded-3 p-4 bg-white">
+        
+        <!-- LOGO E IDENTIDAD -->
+        <div class="text-center mb-4">
+          <div class="d-inline-block bg-primary text-white rounded-circle p-3 mb-2 shadow-sm">
+            <i class="bi bi-shield-lock-fill fs-3"></i>
+          </div>
+          <h4 class="fw-bold text-dark m-0">SigoCartera</h4>
+          <p class="text-muted small">Módulo de Auditoría y Control de Antigüedad</p>
         </div>
-        <h2 class="fw-bold text-dark mb-1">SigoCartera</h2>
-        <p class="text-muted small">Sistema de Gestión y Antigüedad de Saldos</p>
+
+        <!-- FORMULARIO DE CREDENCIALES -->
+        <form (ngSubmit)="intentarIniciarSesion()">
+          
+          <!-- CAMPO USUARIO -->
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">Correo Electrónico:</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-person-fill"></i></span>
+              <input 
+                type="email" 
+                class="form-control border-start-0" 
+                placeholder="ejemplo@sigocartera.com"
+                [(ngModel)]="campoUsuario" 
+                name="usuario" 
+                [disabled]="cargando"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- CAMPO CONTRRASEÑA -->
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">Contraseña:</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-key-fill"></i></span>
+              <input 
+                type="password" 
+                class="form-control border-start-0" 
+                placeholder="••••••••"
+                [(ngModel)]="campoContrasena" 
+                name="contrasena" 
+                [disabled]="cargando"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- MUESTRA DE ALERTAS DE ERROR -->
+          @if (mensajeError) {
+            <div class="alert alert-danger py-1.5 px-3 mb-3 small text-center fw-semibold border-0">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i> {{ mensajeError }}
+            </div>
+          }
+
+          <!-- BOTÓN DE ACCIÓN -->
+          <div class="d-grid mt-2">
+            <button 
+              type="submit" 
+              class="btn btn-sm btn-primary fw-bold py-2 shadow-sm"
+              [disabled]="cargando || !campoUsuario || !campoContrasena"
+            >
+              @if (cargando) {
+                <span class="spinner-border spinner-border-sm me-1"></span> Autenticando...
+              } @else {
+                <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar al Sistema
+              }
+            </button>
+          </div>
+
+        </form>
+
+        <!-- RECORDATORIO DE CREDENCIALES TEMPORALES -->
+        <div class="mt-4 pt-2 border-top text-center">
+          <span class="text-muted d-block" style="font-size: 0.68rem;">Credenciales de acceso local temporal:</span>
+          <code class="d-block text-secondary mt-0.5" style="font-size: 0.72rem;">admin&#64;sigocartera.com / Sigo2026*</code>
+        </div>
+
       </div>
-
-      <!-- Formulario -->
-      <form (ngSubmit)="onLogin()">
-        <div class="mb-3">
-          <label class="form-label text-secondary small fw-semibold">Perfil de Acceso</label>
-          <select class="form-select border-2" name="perfil" [(ngModel)]="perfil">
-            <option value="admin">Administrador (Carga de Datos)</option>
-            <option value="analista">Analista de Cobros (Consultas)</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label text-secondary small fw-semibold">Nombre de Usuario</label>
-          <div class="input-group">
-            <span class="input-group-text bg-white border-2 border-end-0 text-muted"><i class="bi bi-person"></i></span>
-            <input type="text" name="usuario" [(ngModel)]="usuario" class="form-control border-2 border-start-0" placeholder="Ej: admin_local" required>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label text-secondary small fw-semibold">Contraseña</label>
-          <div class="input-group">
-            <span class="input-group-text bg-white border-2 border-end-0 text-muted"><i class="bi bi-lock"></i></span>
-            <input type="password" name="contrasena" [(ngModel)]="contrasena" class="form-control border-2 border-start-0" placeholder="••••••••" required>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold shadow-sm">
-          Iniciar Sesión Local
-        </button>
-      </form>
 
     </div>
   </div>

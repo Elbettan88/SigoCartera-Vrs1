@@ -1,92 +1,59 @@
-<div class="container-fluid p-4">
-  <!-- Encabezado -->
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-    <div>
-      <h1 class="h3 mb-1 fw-bold text-dark">Importación e Historial Mensual</h1>
-      <p class="text-muted small mb-0">Cargue el archivo consolidado de facturas y pagos para actualizar los saldos locales.</p>
-    </div>
-  </div>
-
-  <div class="row g-4">
-    <!-- PANEL IZQUIERDO: Zona interactiva de carga (Soporte Bimoneda) -->
-    <div class="col-12 col-xl-5">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-header bg-white py-3 border-bottom">
-          <h6 class="m-0 fw-bold text-dark fs-6">Archivo de Entrada</h6>
+<div class="container p-4 font-sans text-start">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      
+      <!-- CARD CONTENEDORA -->
+      <div class="card shadow border-0 rounded p-4 bg-white mt-4">
+        <div class="text-center mb-4">
+          <i class="bi bi-file-earmark-arrow-up text-primary display-4"></i>
+          <h3 class="fw-bold text-dark mt-2">Carga Mensual Masiva</h3>
+          <p class="text-muted small">Suba el archivo consolidado de facturación de agencias para actualizar la matriz dinámica.</p>
         </div>
-        <div class="card-body p-4 d-flex flex-column justify-content-between">
-          
-          <!-- Drop Zone Estilizada con el evento de escucha en Angular -->
-          <div class="drop-zone p-5 text-center border border-2 border-dashed rounded-3 bg-light position-relative">
-            <i class="bi bi-file-earmark-excel text-success display-5 mb-3 d-block"></i>
-            <h5 class="fw-bold text-secondary fs-6">Arrastre su archivo Excel aquí</h5>
-            <p class="text-muted small mb-0">o haga clic para explorar sus archivos locales</p>
-            <input type="file" class="file-input" accept=".xlsx, .xls" (change)="onFileChange($event)">
-          </div>
 
-          <!-- Alerta de Validación del Layout (Actualizada a Bimoneda Cruzada) -->
-          <div class="alert alert-warning mt-4 mb-0 border-0 shadow-sm" role="alert">
-            <h6 class="alert-heading fw-bold small d-flex align-items-center gap-2 mb-2">
-              <i class="bi bi-exclamation-triangle-fill"></i> REQUISITOS DEL DOCUMENTO
-            </h6>
-            <p class="small text-secondary mb-1">Para que el ciclo mensual guarde el historial correctamente sin duplicar datos, valide que las columnas se llamen exactamente:</p>
-            <ul class="small text-secondary mb-0 ps-3">
-              <li><strong>Facturas:</strong> No_Factura, NIT_Cliente, Fecha_Emision, Moneda (GTQ o USD), Monto_Inicial.</li>
-              <li><strong>Pagos:</strong> No_Factura, Fecha_Pago, Moneda_Pago (GTQ o USD), Monto_Pagado, Tasa_Cambio.</li>
-            </ul>
-          </div>
-
+        <!-- REQUISITOS DEL EXCEL -->
+        <div class="alert alert-light border small text-secondary mb-4 py-2 px-3">
+          <strong class="text-dark d-block mb-1">Estructura esperada del archivo:</strong>
+          Las columnas de la primera fila deben llamarse: <code class="text-primary fw-bold">NIT</code>, <code class="text-primary fw-bold">CLIENTE</code>, <code class="text-primary fw-bold">MARCA</code>, <code class="text-primary fw-bold">FACTURA</code>, <code class="text-primary fw-bold">MONEDA</code>, <code class="text-primary fw-bold">MONTO</code>.
         </div>
+
+        <!-- FORMULARIO DE CARGA -->
+        <div class="mb-3">
+          <label class="form-label fw-bold small text-dark">Seleccionar archivo Excel (.xlsx):</label>
+          <input 
+            type="file" 
+            class="form-control form-control-sm" 
+            accept=".xlsx, .xls"
+            (change)="onArchivoCambio($event)"
+            [disabled]="cargando"
+          />
+        </div>
+
+        <!-- MENSAJE DE ESTADO -->
+        @if (mensajeEstado) {
+          <div class="text-center mb-3 p-2 rounded small fw-semibold" 
+               [ngClass]="mensajeEstado.includes('Error') ? 'bg-danger-subtle text-danger':'bg-light text-primary border'">
+            {{ mensajeEstado }}
+          </div>
+        }
+
+        <!-- ACCIONES -->
+        <div class="d-grid gap-2 mt-2">
+          <button 
+            type="button" 
+            (click)="subirYProcesarCartera()" 
+            class="btn btn-primary fw-bold"
+            [disabled]="cargando || !archivoSeleccionado"
+          >
+            @if (cargando) {
+              <span class="spinner-border spinner-border-sm me-1"></span> Procesando...
+            } @else {
+              <i class="bi bi-cloud-upload-fill me-1"></i> Procesar Facturación Masiva
+            }
+          </button>
+        </div>
+
       </div>
-    </div>
 
-    <!-- PANEL DERECHO: Previsualización de filas leídas (DINÁMICO) -->
-    <div class="col-12 col-xl-7">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-          <h6 class="m-0 fw-bold text-dark fs-6">Vista Previa del Procesamiento</h6>
-          <span class="badge bg-secondary rounded-pill" [class.bg-success]="datosPrevisualizacion.length > 0">
-            {{ datosPrevisualizacion.length > 0 ? 'Archivo Listo' : 'Esperando archivo...' }}
-          </span>
-        </div>
-        
-        <div class="card-body p-0 d-flex flex-column justify-content-between bg-white min-height-preview">
-          
-          <!-- ESTADO 1: Si NO hay datos cargados, muestra el mensaje vacío centrado -->
-          <div *ngIf="datosPrevisualizacion.length === 0" class="text-center text-muted p-5 m-auto">
-            <i class="bi bi-cloud-arrow-up display-6 text-secondary mb-3 d-block"></i>
-            <p class="mb-0 small fw-medium">Ningún archivo cargado en este ciclo local.</p>
-            <p class="text-muted small fs-7">Los datos leídos se desplegarán aquí antes de guardarse en MySQL.</p>
-          </div>
-
-          <!-- ESTADO 2: Si el archivo contiene datos, renderiza la tabla de auditoría -->
-          <div *ngIf="datosPrevisualizacion.length > 0" class="w-100">
-            <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
-              <span class="small fw-semibold text-success"><i class="bi bi-file-check-fill me-2"></i>{{ nombreArchivo }}</span>
-              <button class="btn btn-sm btn-primary fw-bold shadow-sm px-3">Procesar e Guardar en BD</button>
-            </div>
-            
-            <div class="table-responsive">
-              <table class="table table-sm table-hover align-middle mb-0">
-                <thead class="table-light small text-secondary text-uppercase text-center">
-                  <tr>
-                    <th *ngFor="let col of columnas" class="px-3 py-2">{{ col }}</th>
-                  </tr>
-                </thead>
-                <tbody class="small font-mono text-center">
-                  <tr *ngFor="let fila of datosPrevisualizacion">
-                    <td *ngFor="let col of columnas" class="px-3 py-2 text-dark">{{ fila[col] }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="p-2 bg-light text-center border-top">
-              <small class="text-muted fs-7">Mostrando una vista previa de los primeros 5 registros del archivo.</small>
-            </div>
-          </div>
-
-        </div>
-      </div>
     </div>
   </div>
 </div>

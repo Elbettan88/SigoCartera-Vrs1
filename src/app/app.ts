@@ -1,26 +1,39 @@
-import { Component } from '@angular/core';
-import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
-import { NgIf } from '@angular/common'; // <-- Importación necesaria para usar *ngIf en Standalone
-import { SidebarComponent } from './components/sidebar/sidebar';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.html',
-  styleUrl: './app.scss',
-  imports: [RouterOutlet, SidebarComponent, NgIf] // <-- Asegúrate de incluir NgIf aquí
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  templateUrl: './app.html', // 🚀 CORREGIDO: Apunta al nombre real de tu archivo plano
+  styleUrls: ['./app.scss']
 })
-export class AppComponent {
-  title = 'SigoCarteraApp';
-  mostrarSidebar: boolean = true;
+export class AppComponent implements OnInit {
+  usuarioNombre = 'Usuario Activo';
 
-  constructor(private router: Router) {
-    // Escucha cada vez que termina una navegación en el ERP
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
-      // Si la URL actual es '/login' o la raíz '', oculta el Sidebar
-      this.mostrarSidebar = !(event.url === '/login' || event.url === '/' || event.urlAfterRedirects === '/login');
-    });
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.actualizarIdentidadUsuario();
+  }
+
+  actualizarIdentidadUsuario() {
+    const nombreGuardado = localStorage.getItem('sigo_usuario_nombre');
+    if (nombreGuardado) {
+      this.usuarioNombre = nombreGuardado;
+    }
+  }
+
+  mostrarSidebar(): boolean {
+    return this.router.url !== '/login' && localStorage.getItem('sigo_sesion_activa') === 'true';
+  }
+
+  ejecutarCerrarSesion() {
+    if (confirm('¿Está seguro que desea cerrar sesión en SigoCartera?')) {
+      localStorage.removeItem('sigo_sesion_activa');
+      localStorage.removeItem('sigo_usuario_nombre');
+      this.router.navigate(['/login']);
+    }
   }
 }

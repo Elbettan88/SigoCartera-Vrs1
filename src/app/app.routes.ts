@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login';
-import { DashboardComponent } from './components/dashboard/dashboard';
+import { DashboardComponent } from './components/dashboard/dashboard'; // <-- Asegúrate que esté así
 import { CargaExcelComponent } from './components/carga-excel/carga-excel';
 
 export const routes: Routes = [

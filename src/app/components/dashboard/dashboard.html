@@ -1,124 +1,136 @@
-<div class="container-fluid p-4">
-  <!-- Encabezado Fijo -->
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+<div class="container-fluid p-3 font-sans">
+  <!-- ENCABEZADO RESTAURADO SIN BOTÓN DE SALIDA -->
+  <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
     <div>
-      <h1 class="h3 mb-1 fw-bold text-dark">SigoCartera - Reporte Consolidado Avanzado</h1>
-      <p class="text-muted small mb-0">Matriz bimoneda paralela con agrupamiento y distribución automática de facturas.</p>
+      <h2 class="fw-bold text-dark m-0 fs-4">SigoCartera — Matriz Dinámica</h2>
+      <p class="text-muted small m-0">Estructura Pivot: NIT ➔ Marca ➔ Facturas</p>
     </div>
-    <!-- Botón con evento click conectado para descargar el archivo .xlsx real -->
-    <button (click)="exportarAExcel()" class="btn btn-sm btn-success d-flex align-items-center gap-2 fw-bold shadow-sm">
-      <i class="bi bi-file-earmark-spreadsheet"></i> Exportar a Excel (.xlsx)
-    </button>
-  </div>
-
-  <!-- SECCIÓN DE SEGUIMIENTO MÉTRICO (KPIs Sincronizados Unificados) -->
-  <div class="row g-4 mb-4">
-    <!-- Bloque Quetzales (GTQ) -->
-    <div class="col-12 col-xl-6">
-      <div class="p-3 border rounded-3 bg-white shadow-sm h-100 border-start border-success border-4">
-        <div class="d-flex align-items-center mb-3">
-          <span class="badge bg-success me-2 px-2.5 py-1.5 fs-7">GTQ</span>
-          <h6 class="fw-bold text-dark mb-0">Indicadores en Quetzales</h6>
-        </div>
-        <div class="row g-2 text-center text-secondary small">
-          <div class="col-4"><div class="p-2 bg-light rounded-3"><span class="fs-8 d-block mb-1">Total Vivo</span><h5 class="fw-bold text-dark mb-0">Q {{ obtenerTotalGeneral('total', 'GTQ') | number:'1.2-2' }}</h5></div></div>
-          <div class="col-4"><div class="p-2 bg-light rounded-3"><span class="fs-8 d-block mb-1">Pagos Aplicados</span><h5 class="fw-bold text-success mb-0">Q {{ pagosRecibidosGTQ | number:'1.2-2' }}</h5></div></div>
-          <div class="col-4"><div class="p-2 bg-success-subtle text-success rounded-3"><span class="fs-8 d-block mb-1">% Recuperación</span><h5 class="fw-bold mb-0">{{ (pagosRecibidosGTQ / (obtenerTotalGeneral('total', 'GTQ') + pagosRecibidosGTQ)) * 100 | number:'1.1-1' }} %</h5></div></div>
-          <div class="col-12 mt-2"><div class="p-2 bg-light rounded-3 d-flex justify-content-between px-3 text-danger fw-bold"><span>Monto Crítico (+120 Días Vencido):</span><span>Q {{ obtenerTotalGeneral('120M', 'GTQ') | number:'1.2-2' }}</span></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bloque Dólares (USD) -->
-    <div class="col-12 col-xl-6">
-      <div class="p-3 border rounded-3 bg-white shadow-sm h-100 border-start border-primary border-4">
-        <div class="d-flex align-items-center mb-3">
-          <span class="badge bg-primary me-2 px-2.5 py-1.5 fs-7">USD</span>
-          <h6 class="fw-bold text-dark mb-0">Indicadores en Dólares</h6>
-        </div>
-        <div class="row g-2 text-center text-secondary small">
-          <div class="col-4"><div class="p-2 bg-light rounded-3"><span class="fs-8 d-block mb-1">Total Vivo</span><h5 class="fw-bold text-dark mb-0">$ {{ obtenerTotalGeneral('total', 'USD') | number:'1.2-2' }}</h5></div></div>
-          <div class="col-4"><div class="p-2 bg-light rounded-3"><span class="fs-8 d-block mb-1">Pagos Aplicados</span><h5 class="fw-bold text-primary mb-0">$ {{ pagosRecibidosUSD | number:'1.2-2' }}</h5></div></div>
-          <div class="col-4"><div class="p-2 bg-primary-subtle text-primary rounded-3"><span class="fs-8 d-block mb-1">% Recuperación</span><h5 class="fw-bold mb-0">{{ (pagosRecibidosUSD / (obtenerTotalGeneral('total', 'USD') + pagosRecibidosUSD)) * 100 | number:'1.1-1' }} %</h5></div></div>
-          <div class="col-12 mt-2"><div class="p-2 bg-light rounded-3 d-flex justify-content-between px-3 text-danger fw-bold"><span>Monto Crítico (+120 Días Vencido):</span><span>$ {{ obtenerTotalGeneral('120M', 'USD') | number:'1.2-2' }}</span></div></div>
-        </div>
-      </div>
+    <div class="d-flex gap-2">
+      <button type="button" (click)="accionEditarSuperior()" class="btn btn-sm btn-outline-dark fw-bold shadow-sm" [disabled]="!clienteSeleccionado">
+        Modificar Selección
+      </button>
+      <button type="button" (click)="accionAbonarSuperior()" class="btn btn-sm btn-success fw-bold shadow-sm" [disabled]="!facturaSeleccionada">
+        Aplicar Cobro / Abonar
+      </button>
+      <button type="button" (click)="abrirModalNuevaFactura()" class="btn btn-sm btn-primary fw-bold shadow-sm">+ Registrar Operación</button>
+      <button type="button" (click)="exportarAExcel()" class="btn btn-sm btn-success fw-bold shadow-sm">Excel (.xlsx)</button>
     </div>
   </div>
 
-  <!-- REPORTE MATRICIAL DISTRIBUIDO ESTILO EXCEL -->
-  <div class="card border-0 shadow-sm mb-4">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-bordered align-middle mb-0 excel-table">
-          <!-- Doble Fila de Encabezados Combinados -->
-          <thead class="table-dark text-center small text-uppercase fw-bold">
-            <tr>
-              <th rowspan="2" class="text-start align-middle ps-3 cell-cliente">Cliente / Estructura Facturas</th>
-              <th colspan="2" class="bg-primary-dark">Saldo Total</th>
-              <th colspan="2">0-30 Días</th>
-              <th colspan="2">31-60 Días</th>
-              <th colspan="2">61-90 Días</th>
-              <th colspan="2">91-120 Días</th>
-              <th colspan="2" class="pe-3">+120 Días</th>
-            </tr>
-            <tr class="table-secondary sub-header fs-8 text-dark">
-              <th>Q</th> <th>$</th>
-              <th>Q</th> <th>$</th>
-              <th>Q</th> <th>$</th>
-              <th>Q</th> <th>$</th>
-              <th>Q</th> <th>$</th>
-              <th class="pe-3">Q</th> <th>$</th>
-            </tr>
-          </thead>
-          
-          <tbody class="text-end font-mono">
-            @for (item of reporteCartera; track item.cliente) {
-              <!-- FILA PADRE: Consolidado Total del Cliente -->
-              <tr class="row-padre">
-                <td class="text-start ps-3 fw-bold text-dark font-sans cell-cliente">
-                  <button class="btn btn-excel-toggle me-2" (click)="toggleCliente(item)">
-                    <i class="bi" [ngClass]="item.expandido ? 'bi-dash-square' : 'bi-plus-square'"></i>
-                  </button>
-                  {{ item.cliente }}
+  <!-- AVISO DE SELECCIÓN ACTIVA -->
+  <div class="mb-3 fs-8 text-secondary">
+    @if (facturaSeleccionada) {
+      <div class="alert alert-info py-1 px-3 m-0 shadow-sm d-inline-block">Seleccionado: Factura <strong>{{ facturaSeleccionada.no_factura }}</strong> de <strong>{{ clienteSeleccionado?.razon_social }}</strong></div>
+    } @else if (marcaSeleccionada) {
+      <div class="alert alert-light py-1 px-3 m-0 border shadow-sm d-inline-block">Seleccionado: Marca <strong>{{ marcaSeleccionada.nombre_marca }}</strong> de <strong>{{ clienteSeleccionado?.razon_social }}</strong></div>
+    }
+  </div>
+
+  <!-- METRICAS KPIS -->
+  <div class="row g-3 mb-3 text-center small text-secondary">
+    <div class="col-12 col-md-6">
+      <div class="p-3 border rounded bg-white shadow-sm border-start border-success border-3">
+        <div class="fw-bold text-dark text-start mb-2"><span class="badge bg-success me-1">GTQ</span> Indicadores Quetzales</div>
+        <div class="row g-1">
+          <div class="col-4 bg-light p-2 rounded"><span>Vivo</span><h6 class="fw-bold text-dark m-0">Q {{ obtenerTotalGeneral('total', 'GTQ') | number:'1.2-2' }}</h6></div>
+          <div class="col-4 bg-light p-2 rounded"><span>Pagos</span><h6 class="fw-bold text-success m-0">Q {{ pagosRecibidosGTQ | number:'1.2-2' }}</h6></div>
+          <div class="col-4 bg-success-subtle text-success p-2 rounded"><span>% Recup.</span><h6 class="fw-bold m-0">{{ (pagosRecibidosGTQ / (obtenerTotalGeneral('total', 'GTQ') + pagosRecibidosGTQ)) * 100 | number:'1.1-1' }}%</h6></div>
+          <div class="col-12 mt-2 p-1 bg-light rounded d-flex justify-content-between text-danger fw-bold px-2"><span>Crítico (+120d):</span><span>Q {{ obtenerTotalGeneral('120M', 'GTQ') | number:'1.2-2' }}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="p-3 border rounded bg-white shadow-sm border-start border-primary border-3">
+        <div class="fw-bold text-dark text-start mb-2"><span class="badge bg-primary me-1">USD</span> Indicadores Dólares</div>
+        <div class="row g-1">
+          <div class="col-4 bg-light p-2 rounded"><span>Vivo</span><h6 class="fw-bold text-dark m-0">$ {{ obtenerTotalGeneral('total', 'USD') | number:'1.2-2' }}</h6></div>
+          <div class="col-4 bg-light p-2 rounded"><span>Pagos</span><h6 class="fw-bold text-primary m-0">$ {{ pagosRecibidosUSD | number:'1.2-2' }}</h6></div>
+          <div class="col-4 bg-primary-subtle text-primary p-2 rounded"><span>% Recup.</span><h6 class="fw-bold m-0">{{ (pagosRecibidosUSD / (obtenerTotalGeneral('total', 'USD') + pagosRecibidosUSD)) * 100 | number:'1.1-1' }}%</h6></div>
+          <div class="col-12 mt-2 p-1 bg-light rounded d-flex justify-content-between text-danger fw-bold px-2"><span>Crítico (+120d):</span><span>$ {{ obtenerTotalGeneral('120M', 'USD') | number:'1.2-2' }}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUSCADOR -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <input type="text" class="form-control form-control-sm shadow-sm w-25" placeholder="Buscar por NIT o Empresa..." [(ngModel)]="textoBusqueda"/>
+    <span class="text-muted small">Clientes: <strong>{{ carteraFiltrada.length }}</strong></span>
+  </div>
+
+  <!-- TABLA FINANCIERA -->
+  <div class="table-responsive bg-white rounded shadow-sm border">
+    <table class="table table-bordered align-middle m-0 excel-table small">
+      <thead class="table-dark text-center text-uppercase fw-bold fs-8">
+        <tr>
+          <th rowspan="2" class="text-start align-middle ps-3 cell-cliente">Esquema Jerárquico</th>
+          <th colspan="2">Saldo Total</th>
+          <th colspan="2">0-30d</th><th colspan="2">31-60d</th><th colspan="2">61-90d</th><th colspan="2">91-120d</th><th colspan="2">+120d</th>
+        </tr>
+        <tr class="table-secondary text-dark fs-9">
+          <th>Q</th><th>$</th>
+          <th>Q</th><th>$</th><th>Q</th><th>$</th><th>Q</th><th>$</th><th>Q</th><th>$</th><th>Q</th><th>$</th>
+        </tr>
+      </thead>
+      <tbody class="text-end font-mono fs-8">
+        @for (cliente of carteraFiltrada; track cliente.nit) {
+          <tr class="table-secondary fw-bold text-dark">
+            <td class="text-start font-sans">
+              <button type="button" class="btn-excel-toggle me-2" (click)="cliente.expandido = !cliente.expandido">{{ cliente.expandido ? '[-]':'[+]' }}</button>
+              {{ cliente.razon_social }} <span class="badge bg-dark font-mono fs-9 ms-1">NIT: {{cliente.nit}}</span>
+            </td>
+            <td class="bg-total text-success">{{ obtenerMontoCeldaPadre(cliente, 'total', 'GTQ') | number:'1.2-2' }}</td>
+            <td class="bg-total text-primary">{{ obtenerMontoCeldaPadre(cliente, 'total', 'USD') | number:'1.2-2' }}</td>
+            @for (col of columnasRangos; track col) {
+              <td>{{ obtenerMontoCeldaPadre(cliente, col, 'GTQ') | number:'1.2-2' }}</td>
+              <td>{{ obtenerMontoCeldaPadre(cliente, col, 'USD') | number:'1.2-2' }}</td>
+            }
+          </tr>
+          @if (cliente.expandido) {
+            @for (marca of cliente.marcas; track marca.codigo_hijo) {
+              <tr class="fw-semibold text-dark cursor-pointer" [class.table-primary]="marcaSeleccionada === marca && !facturaSeleccionada" (click)="seleccionarClienteMarca(cliente, marca)">
+                <td class="text-start font-sans ps-4">
+                  <button type="button" class="btn-excel-toggle me-2 text-primary" (click)="marca.expandido = !marca.expandido; $event.stopPropagation()">{{ marca.expandido ? '[-]':'[+]' }}</button>
+                  Marca: {{ marca.nombre_marca }} <span class="text-muted small">({{marca.codigo_hijo}})</span>
                 </td>
-                <td class="fw-bold bg-total">{{ obtenerMontoCelda(item, 'total', 'GTQ') ? (calcularTotalPadre(item, 'total', 'GTQ') | number:'1.2-2') : '-' }}</td>
-                <td class="fw-bold bg-total">{{ obtenerMontoCelda(item, 'total', 'USD') ? (calcularTotalPadre(item, 'total', 'USD') | number:'1.2-2') : '-' }}</td>
-                <td>{{ obtenerMontoCelda(item, '30', 'GTQ') ? (calcularTotalPadre(item, '30', 'GTQ') | number:'1.2-2') : '-' }}</td>
-                <td>{{ obtenerMontoCelda(item, '30', 'USD') ? (calcularTotalPadre(item, '30', 'USD') | number:'1.2-2') : '-' }}</td>
-                <td>{{ obtenerMontoCelda(item, '60', 'GTQ') ? (calcularTotalPadre(item, '60', 'GTQ') | number:'1.2-2') : '-' }}</td>
-                <td>{{ obtenerMontoCelda(item, '60', 'USD') ? (calcularTotalPadre(item, '60', 'USD') | number:'1.2-2') : '-' }}</td>
-                <td>{{ obtenerMontoCelda(item, '90', 'GTQ') ? (calcularTotalPadre(item, '90', 'GTQ') | number:'1.2-2') : '-' }}</td>
-                <td>{{ obtenerMontoCelda(item, '90', 'USD') ? (calcularTotalPadre(item, '90', 'USD') | number:'1.2-2') : '-' }}</td>
-                <td [class.bg-light-warning]="calcularTotalPadre(item, '120', 'GTQ') > 0">{{ obtenerMontoCelda(item, '120', 'GTQ') ? (calcularTotalPadre(item, '120', 'GTQ') | number:'1.2-2') : '-' }}</td>
-                <td [class.bg-light-warning]="calcularTotalPadre(item, '120', 'USD') > 0">{{ obtenerMontoCelda(item, '120', 'USD') ? (calcularTotalPadre(item, '120', 'USD') | number:'1.2-2') : '-' }}</td>
-                <td [class.bg-light-danger]="calcularTotalPadre(item, '120M', 'GTQ') > 0">{{ obtenerMontoCelda(item, '120M', 'GTQ') ? (calcularTotalPadre(item, '120M', 'GTQ') | number:'1.2-2') : '-' }}</td>
-                <td [class.bg-light-danger]="calcularTotalPadre(item, '120M', 'USD') > 0">{{ obtenerMontoCelda(item, '120M', 'USD') ? (calcularTotalPadre(item, '120M', 'USD') | number:'1.2-2') : '-' }}</td>
+                <td class="bg-light text-success">{{ obtenerMontoCeldaMarca(marca, 'total', 'GTQ') | number:'1.2-2' }}</td>
+                <td class="bg-light text-primary">{{ obtenerMontoCeldaMarca(marca, 'total', 'USD') | number:'1.2-2' }}</td>
+                @for (col of columnasRangos; track col) {
+                  <td>{{ obtenerMontoCeldaMarca(marca, col, 'GTQ') | number:'1.2-2' }}</td>
+                  <td>{{ obtenerMontoCeldaMarca(marca, col, 'USD') | number:'1.2-2' }}</td>
+                }
               </tr>
-
-              <!-- FILAS HIJAS: Distribución matemática de facturas individuales -->
-              @if (item.expandido) {
-                @for (fac of item.facturas; track fac.no_factura) {
-                  <tr class="row-hija bg-light-preview animate-fade">
-                    <td class="text-start ps-5 font-sans cell-cliente text-secondary small">
+              @if (marca.expandido) {
+                @for (fac of marca.facturas; track fac.no_factura) {
+                  <tr class="bg-light fs-9 text-muted cursor-pointer" [class.table-warning]="facturaSeleccionada === fac" (click)="seleccionarFactura(cliente, marca, fac); $event.stopPropagation()">
+                    <td class="text-start font-sans ps-5">
                       <div class="d-flex align-items-center gap-2">
                         <span class="led-semaforo" [ngClass]="obtenerClaseSemaforo(fac.fecha_emision)"></span>
-                        <strong>{{ fac.no_factura }}</strong> 
-                        <span class="text-muted text-truncate fs-8">(Emisión: {{ fac.fecha_emision }})</span>
-                        <span class="badge bg-dark px-2 fs-9">{{ obtenerDiasAtraso(fac.fecha_emision) <= 0 ? 'Al día' : '+' + obtenerDiasAtraso(fac.fecha_emision) + 'd' }}</span>
+                        <strong>{{ fac.no_factura }}</strong> ({{ obtenerDiasAtraso(fac.fecha_emision) }}d)
                       </div>
                     </td>
-                    
-                    <!-- Celda de Saldo Total de la factura -->
-                    <td class="small text-muted bg-light">{{ fac.moneda === 'GTQ' ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    <td class="small text-muted bg-light">{{ fac.moneda === 'USD' ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    
-                    <!-- Distribución dinámica por columnas de antigüedad -->
-                    <td>{{ (obtenerRangoVencimiento(fac.fecha_emision) === '30' && fac.moneda === 'GTQ') ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    <td>{{ (obtenerRangoVencimiento(fac.fecha_emision) === '30' && fac.moneda === 'USD') ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    <td>{{ (obtenerRangoVencimiento(fac.fecha_emision) === '60' && fac.moneda === 'GTQ') ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    <td>{{ (obtenerRangoVencimiento(fac.fecha_emision) === '60' && fac.moneda === 'USD') ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    <td>{{ (obtenerRangoVencimiento(fac.fecha_emision) === '90' && fac.moneda === 'GTQ') ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    <td>{{ (obtenerRangoVencimiento(fac.fecha_emision) === '90' && fac.moneda === 'USD') ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    
-                    {{ (obtenerRangoVencimiento(fac.fecha_emision) === '120' && fac.moneda === 'GTQ') ? (fac.monto | number:'1.2-2') : '-' }}{{ (obtenerRangoVencimiento(fac.fecha_emision) === '120' && fac.moneda === 'USD') ? (fac.monto | number:'1.2-2') : '-' }}{{ (obtenerRangoVencimiento(fac.fecha_emision) === '120M' && fac.moneda === 'GTQ') ? (fac.monto | number:'1.2-2') : '-' }}{{ (obtenerRangoVencimiento(fac.fecha_emision) === '120M' && fac.moneda === 'USD') ? (fac.monto | number:'1.2-2') : '-' }}}}}TOTAL EMPRESA:Q {{ obtenerTotalGeneral('total', 'GTQ') | number:'1.2-2' }}$ {{ obtenerTotalGeneral('total', 'USD') | number:'1.2-2' }}{{ obtenerTotalGeneral('30', 'GTQ') | number:'1.2-2' }}{{ obtenerTotalGeneral('30', 'USD') | number:'1.2-2' }}{{ obtenerTotalGeneral('60', 'GTQ') | number:'1.2-2' }}{{ obtenerTotalGeneral('60', 'USD') | number:'1.2-2' }}{{ obtenerTotalGeneral('90', 'GTQ') | number:'1.2-2' }}{{ obtenerTotalGeneral('90', 'USD') | number:'1.2-2' }}{{ obtenerTotalGeneral('120', 'GTQ') | number:'1.2-2' }}{{ obtenerTotalGeneral('120', 'USD') | number:'1.2-2' }}{{ obtenerTotalGeneral('120M', 'GTQ') | number:'1.2-2' }}{{ obtenerTotalGeneral('120M', 'USD') | number:'1.2-2' }}
+                    <td class="bg-total text-muted">{{ fac.moneda === 'GTQ' ? (fac.monto | number:'1.2-2') : '-' }}</td>
+                    <td class="bg-total text-muted">{{ fac.moneda === 'USD' ? (fac.monto | number:'1.2-2') : '-' }}</td>
+                    @for (col of columnasRangos; track col) {
+                      <td>{{ (fac.moneda === 'GTQ' && obtenerRangoVencimiento(fac.fecha_emision) === col) ? (fac.monto | number:'1.2-2') : '-' }}</td>
+                      <td>{{ (fac.moneda === 'USD' && obtenerRangoVencimiento(fac.fecha_emision) === col) ? (fac.monto | number:'1.2-2') : '-' }}</td>
+                    }
+                  </tr>
+                }
+              }
+            }
+          }
+        } @empty {
+          <tr><td colspan="13" class="text-center py-3 text-muted font-sans">No se encontraron registros.</td></tr>
+        }
+        <tr class="table-dark fw-bold border-double">
+          <td class="text-start font-sans ps-3">TOTAL GENERAL EMPRESA</td>
+          <td>{{ obtenerTotalGeneral('total', 'GTQ') | number:'1.2-2' }}</td><td>{{ obtenerTotalGeneral('total', 'USD') | number:'1.2-2' }}</td>
+          @for (col of columnasRangos; track col) {
+            <td>{{ obtenerTotalGeneral(col, 'GTQ') | number:'1.2-2' }}</td><td>{{ obtenerTotalGeneral(col, 'USD') | number:'1.2-2' }}</td>
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

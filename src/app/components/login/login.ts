@@ -1,29 +1,41 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'; // <-- Necesario para capturar datos en formularios Standalone
+import { ejecutarValidacionLogin } from './login.utils';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.html',
-  styleUrl: './login.scss',
-  imports: [FormsModule] // <-- Añade FormsModule aquí
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './login.html' // Apuntando al nombre plano de tu archivo
 })
 export class LoginComponent {
-  // Variables vinculadas al formulario
-  perfil: string = 'admin';
-  usuario: string = '';
-  contrasena: string = '';
+  campoUsuario = '';
+  campoContrasena = '';
+  mensajeError = '';
+  cargando = false;
 
-  constructor(private router: Router) {}
-
-  // Función que se ejecuta al enviar el formulario
-  onLogin() {
-    // Validación local simulada
-    if (this.usuario === 'admin_local' && this.contrasena === 'admin123') {
-      alert('¡Acceso concedido al sistema local!');
-      this.router.navigate(['/dashboard']); // <-- Redirección al Dashboard
-    } else {
-      alert('Credenciales incorrectas de prueba. Use: admin_local / admin123');
+  constructor(private router: Router) {
+    // Si el usuario ya tiene sesión activa, lo mandamos directo al dashboard
+    if (localStorage.getItem('sigo_sesion_activa') === 'true') {
+      this.router.navigate(['/dashboard']);
     }
+  }
+
+  intentarIniciarSesion() {
+    this.cargando = true;
+    this.mensajeError = '';
+
+    ejecutarValidacionLogin(this.campoUsuario, this.campoContrasena)
+      .then(() => {
+        this.cargando = false;
+        // Redirigir al Dashboard de forma inmediata al autenticarse
+        this.router.navigate(['/dashboard']);
+      })
+      .catch((error) => {
+        this.cargando = false;
+        this.mensajeError = error;
+      });
   }
 }
