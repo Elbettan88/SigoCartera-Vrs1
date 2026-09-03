@@ -1,28 +1,86 @@
-// Control de Scroll Táctil Responsivo para Libros de Excel
+.font-sans {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.font-mono {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+/* Contenedor de la tabla */
 .container-tabla-movil {
+  max-height: 70vh;
+  overflow-y: auto;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch; /* Suavidad de arrastre en iPhone/Android */
 }
 
-.table-sm-responsive {
-  min-width: 1000px; /* Fuerza a que la matriz mantenga su tamaño contable y no se aplaste */
-}
+/* 🔒 BLINDAJE ULTRA-ESTRICTO ANTI-AMONTONAMIENTO */
+.excel-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
 
-// Limitar el ancho del texto en pantallas de celulares
-.style-nombre-cliente {
-  max-width: 160px;
-  vertical-align: middle;
-}
-
-@media (max-width: 576px) {
-  .btn-xs {
-    padding: 0.25rem 0.4rem !important;
-    font-size: 0.72rem !important;
+  // Fuerza a que la fila mantenga comportamiento lineal horizontal
+  tr {
+    display: table-row !important;
   }
-  .fs-7 {
-    font-size: 0.78rem !important;
+
+  // Fuerza de forma absoluta a que cada td sea una columna horizontal independiente
+  th,
+  td {
+    display: table-cell !important;
+    float: none !important;
+    position: relative !important;
+    padding: 6px 8px !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
   }
-  .fs-8 {
-    font-size: 0.7rem !important;
+}
+
+/* Estilos de Control del Semáforo Circular */
+.indicator-semaforo {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  margin-right: 8px;
+
+  &.bg-danger {
+    animation: pulso-emergencia 2s infinite ease-in-out;
+  }
+}
+
+@keyframes pulso-emergencia {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.5);
+  }
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 5px rgba(220, 53, 69, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+  }
+}
+
+/* Clases auxiliares */
+.btn-xs {
+  padding: 0.25rem 0.4rem;
+  font-size: 0.75rem;
+  border-radius: 0.2rem;
+}
+
+.btn-excel-toggle {
+  background: none;
+  border: none;
+  font-weight: bold;
+  color: #6c757d;
+  cursor: pointer;
+  &:hover {
+    color: #212529;
   }
 }

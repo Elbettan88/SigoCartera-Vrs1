@@ -1,0 +1,104 @@
+<div
+  class="modal fade show d-block"
+  tabindex="-1"
+  style="background: rgba(0, 0, 0, 0.5)"
+  role="dialog"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-dark text-white py-2 px-3">
+        <h6 class="modal-title fw-bold m-0 fs-7">🧾 Registrar Documento en Cartera</h6>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="cerrar()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-3 font-sans small text-secondary">
+        <form (ngSubmit)="enviarFormulario()">
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label fw-bold mb-1 text-dark">NIT Cliente (ID Padre)*</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="nuevaFactura.nitCliente"
+                name="nitCli"
+                required
+                placeholder="Ej: 814526-7"
+              />
+            </div>
+            <div class="col-6">
+              <label class="form-label fw-bold mb-1 text-dark">Código Marca (Hijo)*</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="nuevaFactura.codigoHijoMarca"
+                name="codHijo"
+                required
+                placeholder="Ej: MARC-001"
+              />
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label fw-bold mb-1 text-dark">No. Factura*</label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              [(ngModel)]="nuevaFactura.no_factura"
+              name="noFac"
+              required
+              placeholder="Ej: FE-9921"
+            />
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-4">
+              <label class="form-label fw-bold mb-1 text-dark">Moneda</label>
+              <select
+                class="form-select form-select-sm"
+                [(ngModel)]="nuevaFactura.moneda"
+                name="moneda"
+              >
+                <option value="GTQ">GTQ (Q)</option>
+                <option value="USD">USD ($)</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <label class="form-label fw-bold mb-1 text-dark">Monto Saldo*</label>
+              <input
+                type="number"
+                class="form-control form-control-sm text-end"
+                [(ngModel)]="nuevaFactura.saldo"
+                name="saldo"
+                required
+                placeholder="0.00"
+              />
+            </div>
+            <div class="col-4">
+              <label class="form-label fw-bold mb-1 text-dark">Días Vencimiento</label>
+              <input
+                type="number"
+                class="form-control form-control-sm text-center"
+                [(ngModel)]="nuevaFactura.dias_vencidos"
+                name="diasVenc"
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+            <button type="button" class="btn btn-xs btn-outline-secondary px-3" (click)="cerrar()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-xs btn-primary px-3 fw-bold">
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

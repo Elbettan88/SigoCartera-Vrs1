@@ -1,5 +1,5 @@
 .content-wrapper {
-  margin-left: 260px; 
+  margin-left: 260px;
   width: calc(100% - 260px);
   transition: all 0.2s ease-in-out;
 
@@ -8,4 +8,27 @@
     margin-left: 0 !important;
     width: 100% !important;
   }
+}
+.btn-sidebar-menu {
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Indicador activo para Quetzales (Estilo Bootstrap Success) */
+.active-gtq {
+  background-color: #198754 !important;
+  color: #fff !important;
+  font-weight: bold;
+  border-left: 3px solid #fff;
+}
+
+/* Indicador activo para Dólares (Estilo Bootstrap Primary) */
+.active-usd {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+  font-weight: bold;
+  border-left: 3px solid #fff;
 }

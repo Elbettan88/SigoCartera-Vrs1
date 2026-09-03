@@ -1,141 +1,291 @@
 <div class="container-fluid p-2 p-md-3 font-sans">
-  
   <!-- ENCABEZADO CON BOTONES SUPERIORES RESPONSIVOS -->
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3 pb-2 border-bottom">
+  <div
+    class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3 pb-2 border-bottom"
+  >
     <div>
       <h2 class="fw-bold text-dark m-0 fs-4 fs-sm-5">SigoCartera — Matriz Dinámica</h2>
       <p class="text-muted small m-0">Estructura Pivot: NIT ➔ Marca ➔ Facturas</p>
     </div>
     <div class="d-flex flex-wrap gap-1.5 w-100 w-md-auto">
-      <button type="button" (click)="accionEditarSuperior()" class="btn btn-xs btn-outline-dark fw-bold flex-grow-1 flex-md-grow-0" [disabled]="!clienteSeleccionado">
+      <button
+        type="button"
+        (click)="accionEditarSuperior()"
+        class="btn btn-xs btn-outline-dark fw-bold flex-grow-1 flex-md-grow-0"
+        [disabled]="!clienteSeleccionado && !facturaSeleccionada"
+      >
         Modificar
       </button>
-      <button type="button" (click)="accionAbonarSuperior()" class="btn btn-xs btn-success fw-bold flex-grow-1 flex-md-grow-0" [disabled]="!facturaSeleccionada">
+      <button
+        type="button"
+        (click)="accionAbonarSuperior()"
+        class="btn btn-xs btn-success fw-bold flex-grow-1 flex-md-grow-0"
+        [disabled]="!facturaSeleccionada"
+      >
         Abonar
       </button>
-      <button type="button" (click)="abrirModalNuevaFactura()" class="btn btn-xs btn-primary fw-bold flex-grow-1 flex-md-grow-0">+ Registrar</button>
-      <button type="button" (click)="exportarAExcel()" class="btn btn-xs btn-success fw-bold flex-grow-1 flex-md-grow-0">Excel</button>
+      <button
+        type="button"
+        (click)="abrirModalNuevaFactura()"
+        class="btn btn-xs btn-primary fw-bold flex-grow-1 flex-md-grow-0"
+      >
+        + Registrar
+      </button>
+      <button
+        type="button"
+        (click)="exportarAExcel()"
+        class="btn btn-xs btn-success fw-bold flex-grow-1 flex-md-grow-0"
+      >
+        Excel
+      </button>
     </div>
   </div>
 
   <!-- AVISO DE SELECCIÓN ACTIVA -->
-  <div class="mb-2 fs-8 text-secondary w-100">
+  <div class="mb-3 fs-8 text-secondary w-100">
     @if (facturaSeleccionada) {
-      <div class="alert alert-info py-1 px-2 m-0 shadow-sm d-block text-truncate">Fac: <strong>{{ facturaSeleccionada.no_factura }}</strong> de <strong>{{ clienteSeleccionado?.razon_social }}</strong></div>
+      <div class="alert alert-info py-1 px-2 m-0 shadow-sm d-block text-truncate">
+        Fac: <strong>{{ facturaSeleccionada.no_factura }}</strong> de
+        <strong>{{ clienteSeleccionado?.razon_social }}</strong>
+      </div>
     } @else if (marcaSeleccionada) {
-      <div class="alert alert-light py-1 px-2 m-0 border shadow-sm d-block text-truncate">Marca: <strong>{{ marcaSeleccionada.nombre_marca }}</strong></div>
+      <div class="alert alert-light py-1 px-2 m-0 border shadow-sm d-block text-truncate">
+        Marca: <strong>{{ marcaSeleccionada.nombre_marca }}</strong> ({{
+          marcaSeleccionada.codigo_hijo
+        }})
+      </div>
     }
   </div>
 
-  <!-- METRICAS KPIS RESPONSIVAS -->
-  <div class="row g-2 mb-3 text-center small text-secondary">
-    <!-- Bloque Quetzales -->
-    <div class="col-12 col-md-6">
-      <div class="p-2.5 border rounded bg-white shadow-sm border-start border-success border-3">
-        <div class="fw-bold text-dark text-start mb-1.5 small"><span class="badge bg-success me-1">GTQ</span> Indicadores Quetzales</div>
-        <div class="row g-1">
-          <div class="col-4 bg-light py-1.5 px-0.5 rounded"><span>Vivo</span><h6 class="fw-bold text-dark m-0 fs-7">Q {{ obtenerTotalGeneral('total', 'GTQ') | number:'1.2-2' }}</h6></div>
-          <div class="col-4 bg-light py-1.5 px-0.5 rounded"><span>Pagos</span><h6 class="fw-bold text-success m-0 fs-7">Q {{ pagosRecibidosGTQ | number:'1.2-2' }}</h6></div>
-          <div class="col-4 bg-success-subtle text-success py-1.5 px-0.5 rounded"><span>% Recup.</span><h6 class="fw-bold m-0 fs-7">{{ (pagosRecibidosGTQ / (obtenerTotalGeneral('total', 'GTQ') + pagosRecibidosGTQ)) * 100 | number:'1.1-1' }}%</h6></div>
-          <div class="col-12 mt-1.5 p-1 bg-light rounded d-flex justify-content-between text-danger fw-bold px-2 fs-8"><span>Crítico (+120d):</span><span>Q {{ obtenerTotalGeneral('120M', 'GTQ') | number:'1.2-2' }}</span></div>
+  <!-- 📊 METRICAS KPIS MINIMALISTAS EN CUADROS ORGANIZADOS -->
+  <div class="row g-2 mb-4">
+    @if (monedaActiva === 'GTQ') {
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 border-start border-success border-3 bg-white shadow-sm p-3">
+          <span class="text-uppercase text-muted font-sans fw-bold tracking-wider fs-9"
+            >💰 Saldo Vivo</span
+          >
+          <h3 class="fw-bold text-dark m-0 mt-1">
+            Q {{ obtenerTotalGeneral('total', 'GTQ') | number: '1.2-2' }}
+          </h3>
         </div>
       </div>
-    </div>
-    <!-- Bloque Dólares -->
-    <div class="col-12 col-md-6">
-      <div class="p-2.5 border rounded bg-white shadow-sm border-start border-primary border-3">
-        <div class="fw-bold text-dark text-start mb-1.5 small"><span class="badge bg-primary me-1">USD</span> Indicadores Dólares</div>
-        <div class="row g-1">
-          <div class="col-4 bg-light py-1.5 px-0.5 rounded"><span>Vivo</span><h6 class="fw-bold text-dark m-0 fs-7">$ {{ obtenerTotalGeneral('total', 'USD') | number:'1.2-2' }}</h6></div>
-          <div class="col-4 bg-light py-1.5 px-0.5 rounded"><span>Pagos</span><h6 class="fw-bold text-primary m-0 fs-7">$ {{ pagosRecibidosUSD | number:'1.2-2' }}</h6></div>
-          <div class="col-4 bg-primary-subtle text-primary py-1.5 px-0.5 rounded"><span>% Recup.</span><h6 class="fw-bold m-0 fs-7">{{ (pagosRecibidosUSD / (obtenerTotalGeneral('total', 'USD') + pagosRecibidosUSD)) * 100 | number:'1.1-1' }}%</h6></div>
-          <div class="col-12 mt-1.5 p-1 bg-light rounded d-flex justify-content-between text-danger fw-bold px-2 fs-8"><span>Crítico (+120d):</span><span>$ {{ obtenerTotalGeneral('120M', 'USD') | number:'1.2-2' }}</span></div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 border-start border-success border-3 bg-white shadow-sm p-3">
+          <span class="text-uppercase text-muted font-sans fw-bold tracking-wider fs-9"
+            >✅ Pagos Recibidos</span
+          >
+          <h3 class="fw-bold text-success m-0 mt-1">Q {{ pagosRecibidosGTQ | number: '1.2-2' }}</h3>
         </div>
       </div>
-    </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 border-start border-success border-3 bg-white shadow-sm p-3">
+          <span class="text-uppercase text-muted font-sans fw-bold tracking-wider fs-9"
+            >📈 % Recuperación</span
+          >
+          <h3 class="fw-bold text-primary m-0 mt-1">
+            {{
+              (pagosRecibidosGTQ / (obtenerTotalGeneral('total', 'GTQ') + pagosRecibidosGTQ || 1)) *
+                100 | number: '1.1-1'
+            }}%
+          </h3>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 border-start border-danger border-3 bg-white shadow-sm p-3">
+          <span class="text-uppercase text-danger font-sans fw-bold tracking-wider fs-9"
+            >🚨 Crítico (+120d)</span
+          >
+          <h3 class="fw-bold text-danger m-0 mt-1">
+            Q {{ obtenerTotalGeneral('120M', 'GTQ') | number: '1.2-2' }}
+          </h3>
+        </div>
+      </div>
+    }
+
+    @if (monedaActiva === 'USD') {
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 border-start border-primary border-3 bg-white shadow-sm p-3">
+          <span class="text-uppercase text-muted font-sans fw-bold tracking-wider fs-9"
+            >💰 Saldo Vivo</span
+          >
+          <h3 class="fw-bold text-dark m-0 mt-1">
+            $ {{ obtenerTotalGeneral('total', 'USD') | number: '1.2-2' }}
+          </h3>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 border-start border-primary border-3 bg-white shadow-sm p-3">
+          <span class="text-uppercase text-muted font-sans fw-bold tracking-wider fs-9"
+            >✅ Pagos Recibidos</span
+          >
+          <h3 class="fw-bold text-success m-0 mt-1">$ {{ pagosRecibidosUSD | number: '1.2-2' }}</h3>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 border-start border-primary border-3 bg-white shadow-sm p-3">
+          <span class="text-uppercase text-muted font-sans fw-bold tracking-wider fs-9"
+            >📈 % Recuperación</span
+          >
+          <h3 class="fw-bold text-primary m-0 mt-1">
+            {{
+              (pagosRecibidosUSD / (obtenerTotalGeneral('total', 'USD') + pagosRecibidosUSD || 1)) *
+                100 | number: '1.1-1'
+            }}%
+          </h3>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 border-start border-danger border-3 bg-white shadow-sm p-3">
+          <span class="text-uppercase text-danger font-sans fw-bold tracking-wider fs-9"
+            >🚨 Crítico (+120d)</span
+          >
+          <h3 class="fw-bold text-danger m-0 mt-1">
+            $ {{ obtenerTotalGeneral('120M', 'USD') | number: '1.2-2' }}
+          </h3>
+        </div>
+      </div>
+    }
   </div>
 
-  <!-- BUSCADOR RESPONSIVO -->
+  <!-- BUSCADOR -->
   <div class="row g-2 align-items-center mb-3">
     <div class="col-8 col-sm-6 col-md-4">
-      <input type="text" class="form-control form-control-sm shadow-sm w-100" placeholder="Buscar por NIT o Empresa..." [(ngModel)]="textoBusqueda"/>
+      <input
+        type="text"
+        class="form-control form-control-sm shadow-sm w-100"
+        placeholder="Buscar por NIT o Empresa..."
+        [(ngModel)]="textoBusqueda"
+        (input)="filtrarCartera()"
+      />
     </div>
     <div class="col-4 col-sm-6 col-md-8 text-end">
-      <span class="text-muted small fs-8">Clientes: <strong>{{ carteraFiltrada.length }}</strong></span>
+      <span class="text-muted small fs-8"
+        >Clientes: <strong>{{ carteraFiltrada.length }}</strong></span
+      >
     </div>
   </div>
 
-  <!-- TABLA CON CONTENEDOR DE CONTROL DE SCROLL MOVIL -->
-  <div class="table-responsive bg-white rounded shadow-sm border container-tabla-movil">
-    <table class="table table-bordered align-middle m-0 excel-table small table-sm-responsive">
-      <thead class="table-dark text-center text-uppercase fw-bold fs-8">
-        <tr>
-          <th rowspan="2" class="text-start align-middle ps-3 cell-cliente-fija">Esquema Jerárquico</th>
-          <th colspan="2">Saldo Total</th>
-          <th colspan="2">0-30d</th><th colspan="2">31-60d</th><th colspan="2">61-90d</th><th colspan="2">91-120d</th><th colspan="2">+120d</th>
+  <!-- TABLA CON ARQUITECTURA JERÁRQUICA EN ORDEN FIJO -->
+  <div class="container-tabla-movil bg-white rounded shadow-sm border">
+    <table
+      class="table table-bordered align-middle m-0 excel-table small"
+      style="
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+        display: table !important;
+      "
+    >
+      <thead
+        class="table-dark text-center text-uppercase fw-bold fs-8"
+        style="display: table-header-group !important"
+      >
+        <tr style="display: table-row !important">
+          <th
+            rowspan="2"
+            class="text-start align-middle ps-3"
+            style="width: 30%; display: table-cell !important"
+          >
+            Esquema Jerárquico
+          </th>
+          <th colspan="1" style="width: 14%; display: table-cell !important">Saldo Total</th>
+          <th colspan="5" style="width: 56%; display: table-cell !important">
+            Distribución de Mora por Rango Temporal
+          </th>
         </tr>
-        <tr class="table-secondary text-dark fs-9">
-          <th>Q</th><th>$</th><th>Q</th><th>$</th><th>Q</th><th>$</th><th>Q</th><th>$</th><th>Q</th><th>$</th><th>Q</th><th>$</th>
+        <tr style="display: table-row !important">
+          <th style="display: table-cell !important">
+            {{ monedaActiva === 'GTQ' ? 'Q (Quetzales)' : '$ (Dólares)' }}
+          </th>
+          @for (col of columnasRangos; track col) {
+            <th style="display: table-cell !important">{{ col }}</th>
+          }
         </tr>
       </thead>
-      <tbody class="text-end font-mono fs-8">
+
+      <tbody class="text-end font-mono fs-8" style="display: table-row-group !important">
         @for (cliente of carteraFiltrada; track cliente.nit) {
-          <tr class="table-secondary fw-bold text-dark">
-            <td class="text-start font-sans cell-cliente-fija">
-              <button type="button" class="btn-excel-toggle p-0 me-1" (click)="cliente.expandido = !cliente.expandido">{{ cliente.expandido ? '[-]':'[+]' }}</button>
-              <span class="text-truncate d-inline-block style-nombre-cliente">{{ cliente.razon_social }}</span>
+          <!-- 1. FILA PADRE: CLIENTE -->
+          <tr class="table-secondary fw-bold text-dark" style="display: table-row !important">
+            <td class="text-start font-sans" style="display: table-cell !important">
+              <button
+                type="button"
+                class="btn-excel-toggle p-0 me-1"
+                (click)="cliente.expandido = !cliente.expandido"
+              >
+                {{ cliente.expandido ? '[-]' : '[+]' }}
+              </button>
+              <span>[{{ cliente.nit }}] — {{ cliente.razon_social }}</span>
             </td>
-            <td class="bg-total text-success">{{ obtenerMontoCeldaPadre(cliente, 'total', 'GTQ') | number:'1.2-2' }}</td>
-            <td class="bg-total text-primary">{{ obtenerMontoCeldaPadre(cliente, 'total', 'USD') | number:'1.2-2' }}</td>
+            <td
+              class="fw-bold"
+              [class.text-success]="monedaActiva === 'GTQ'"
+              [class.text-primary]="monedaActiva === 'USD'"
+              style="display: table-cell !important"
+            >
+              {{ obtenerMontoCeldaPadre(cliente, 'total', monedaActiva) | number: '1.2-2' }}
+            </td>
             @for (col of columnasRangos; track col) {
-              <td>{{ obtenerMontoCeldaPadre(cliente, col, 'GTQ') | number:'1.2-2' }}</td>
-              <td>{{ obtenerMontoCeldaPadre(cliente, col, 'USD') | number:'1.2-2' }}</td>
+              <td style="display: table-cell !important">
+                {{ obtenerMontoCeldaPadre(cliente, col, monedaActiva) | number: '1.2-2' }}
+              </td>
             }
           </tr>
+
           @if (cliente.expandido) {
             @for (marca of cliente.marcas; track marca.codigo_hijo) {
-              <tr class="fw-semibold text-dark cursor-pointer" [class.table-primary]="marcaSeleccionada === marca && !facturaSeleccionada" (click)="seleccionarClienteMarca(cliente, marca)">
-                <td class="text-start font-sans ps-3 cell-cliente-fija">
-                  <button type="button" class="btn-excel-toggle p-0 me-1 text-primary" (click)="marca.expandido = !marca.expandido; $event.stopPropagation()">{{ marca.expandido ? '[-]':'[+]' }}</button>
-                  <span class="text-truncate">M: {{ marca.nombre_marca }}</span>
+              <!-- 2. FILA HIJO: MARCA -->
+              <tr
+                class="fw-semibold text-dark cursor-pointer"
+                [class.table-primary]="marcaSeleccionada === marca && !facturaSeleccionada"
+                (click)="seleccionarClienteMarca(cliente, marca)"
+                style="display: table-row !important"
+              >
+                <td class="text-start font-sans ps-3" style="display: table-cell !important">
+                  <button
+                    type="button"
+                    class="btn-excel-toggle p-0 me-1 text-primary"
+                    (click)="marca.expandido = !marca.expandido; $event.stopPropagation()"
+                  >
+                    {{ marca.expandido ? '[-]' : '[+]' }}
+                  </button>
+                  <span>{{ marca.nombre_marca }} ({{ marca.codigo_hijo }})</span>
                 </td>
-                <td class="bg-light text-success">{{ obtenerMontoCeldaMarca(marca, 'total', 'GTQ') | number:'1.2-2' }}</td>
-                <td class="bg-light text-primary">{{ obtenerMontoCeldaMarca(marca, 'total', 'USD') | number:'1.2-2' }}</td>
+                <td style="display: table-cell !important">
+                  {{ obtenerMontoCeldaMarca(marca, 'total', monedaActiva) | number: '1.2-2' }}
+                </td>
                 @for (col of columnasRangos; track col) {
-                  <td>{{ obtenerMontoCeldaMarca(marca, col, 'GTQ') | number:'1.2-2' }}</td>
-                  <td>{{ obtenerMontoCeldaMarca(marca, col, 'USD') | number:'1.2-2' }}</td>
+                  <td style="display: table-cell !important">
+                    {{ obtenerMontoCeldaMarca(marca, col, monedaActiva) | number: '1.2-2' }}
+                  </td>
                 }
               </tr>
+
+              <!-- 3. FILAS NIETO: DETALLE DE FACTURAS -->
               @if (marca.expandido) {
                 @for (fac of marca.facturas; track fac.no_factura) {
-                  <tr class="bg-light fs-9 text-muted cursor-pointer" [class.table-warning]="facturaSeleccionada === fac" (click)="seleccionarFactura(cliente, marca, fac); $event.stopPropagation()">
-                    <td class="text-start font-sans ps-4 cell-cliente-fija">
-                      <div class="d-flex align-items-center gap-1 text-truncate">
-                        <span class="led-semaforo flex-shrink-0" [ngClass]="obtenerClaseSemaforo(fac.fecha_emision)"></span>
-                        <strong class="text-truncate">{{ fac.no_factura }}</strong>
-                      </div>
-                    </td>
-                    <td class="bg-total text-muted">{{ fac.moneda === 'GTQ' ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    <td class="bg-total text-muted">{{ fac.moneda === 'USD' ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    @for (col of columnasRangos; track col) {
-                      <td>{{ (fac.moneda === 'GTQ' && obtenerRangoVencimiento(fac.fecha_emision) === col) ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                      <td>{{ (fac.moneda === 'USD' && obtenerRangoVencimiento(fac.fecha_emision) === col) ? (fac.monto | number:'1.2-2') : '-' }}</td>
-                    }
-                  </tr>
+                  @if (fac.moneda === monedaActiva) {
+                    {{ fac.saldo | number: '1.2-2'
+                    }}{{
+                      obtenerRangoFactura(fac) === '0-30' ? (fac.saldo | number: '1.2-2') : '0.00'
+                    }}{{
+                      obtenerRangoFactura(fac) === '31-60' ? (fac.saldo | number: '1.2-2') : '0.00'
+                    }}{{
+                      obtenerRangoFactura(fac) === '61-90' ? (fac.saldo | number: '1.2-2') : '0.00'
+                    }}{{
+                      obtenerRangoFactura(fac) === '91-120'
+                        ? (fac.saldo | number: '1.2-2')
+                        : '0.00'
+                    }}{{
+                      obtenerRangoFactura(fac) === '120M' ? (fac.saldo | number: '1.2-2') : '0.00'
+                    }}
+                  }
                 }
               }
             }
           }
-        } @empty {
-          <tr><td colspan="13" class="text-center py-3 text-muted font-sans">No se encontraron registros.</td></tr>
         }
-        <tr class="table-dark fw-bold border-double">
-          <td class="text-start font-sans ps-3 cell-cliente-fija">TOTAL EMPRESA</td>
-          <td>{{ obtenerTotalGeneral('total', 'GTQ') | number:'1.2-2' }}</td><td>{{ obtenerTotalGeneral('total', 'USD') | number:'1.2-2' }}</td>
-          @for (col of columnasRangos; track col) {
-            <td>{{ obtenerTotalGeneral(col, 'GTQ') | number:'1.2-2' }}</td><td>{{ obtenerTotalGeneral(col, 'USD') | number:'1.2-2' }}</td>
-          }
-        </tr>
       </tbody>
     </table>
   </div>

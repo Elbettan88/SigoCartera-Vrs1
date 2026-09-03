@@ -1,0 +1,125 @@
+<div class="sidebar-matriz-container font-sans fs-10 text-white">
+  <!-- CONMUTADOR EXCLUSIVO DEL SIDEBAR -->
+  <div class="d-flex gap-1 mb-2 bg-secondary bg-opacity-25 p-1 rounded border border-secondary">
+    <button
+      type="button"
+      (click)="cambiarMoneda('GTQ')"
+      class="btn btn-xs flex-grow-1 fw-bold text-uppercase"
+      [class.btn-success]="monedaSeleccionada === 'GTQ'"
+      [class.btn-dark]="monedaSeleccionada !== 'GTQ'"
+    >
+      Quetzales (Q)
+    </button>
+    <button
+      type="button"
+      (click)="cambiarMoneda('USD')"
+      class="btn btn-xs flex-grow-1 fw-bold text-uppercase"
+      [class.btn-primary]="monedaSeleccionada === 'USD'"
+      [class.btn-dark]="monedaSeleccionada !== 'USD'"
+    >
+      Dólares ($)
+    </button>
+  </div>
+
+  <!-- MINI MATRIZ FLUIDA CON CONTROL DE ANCHO -->
+  <div class="table-responsive rounded border border-secondary table-sidebar-scroll">
+    <table class="table table-dark table-bordered align-middle m-0 fs-10 text-end font-mono">
+      <thead class="text-center table-active fw-bold text-uppercase fs-10">
+        <tr>
+          <th
+            class="text-start bg-dark text-white position-sticky left-0"
+            style="min-width: 85px; z-index: 3"
+          >
+            Esquema
+          </th>
+          <th>Total</th>
+          @for (col of columnasRangos; track col) {
+            <th>{{ col }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (cliente of carteraLocal; track cliente.nit) {
+          <tr class="table-light text-dark fw-bold">
+            <td
+              class="text-start font-sans text-truncate position-sticky left-0 bg-light"
+              style="max-width: 85px"
+              [title]="cliente.razon_social"
+            >
+              <span
+                class="cursor-pointer me-1 text-secondary"
+                (click)="cliente.expandido = !cliente.expandido"
+              >
+                {{ cliente.expandido ? '[-]' : '[+]' }}
+              </span>
+              {{ cliente.razon_social }}
+            </td>
+            <td
+              [class.text-success]="monedaSeleccionada === 'GTQ'"
+              [class.text-primary]="monedaSeleccionada === 'USD'"
+            >
+              {{ obtenerMontoPadre(cliente, 'total') | number: '1.0-0' }}
+            </td>
+            @for (col of columnasRangos; track col) {
+              <td>{{ obtenerMontoPadre(cliente, col) | number: '1.0-0' }}</td>
+            }
+          </tr>
+
+          @if (cliente.expandido) {
+            @for (marca of cliente.marcas; track marca.codigo_hijo) {
+              <tr class="table-active text-white fw-semibold">
+                <td
+                  class="text-start font-sans ps-2 text-truncate position-sticky left-0 bg-secondary"
+                  style="max-width: 85px"
+                  [title]="marca.nombre_marca"
+                >
+                  <span
+                    class="cursor-pointer me-1 text-info"
+                    (click)="marca.expandido = !marca.expandido"
+                  >
+                    {{ marca.expandido ? '[-]' : '[+]' }}
+                  </span>
+                  {{ marca.nombre_marca }}
+                </td>
+                <td>{{ obtenerMontoMarca(marca, 'total') | number: '1.0-0' }}</td>
+                @for (col of columnasRangos; track col) {
+                  <td>{{ obtenerMontoMarca(marca, col) | number: '1.0-0' }}</td>
+                }
+              </tr>
+
+              @if (marca.expandido) {
+                @for (fac of marca.facturas; track fac.no_factura) {
+                  @if (fac.moneda === monedaSeleccionada) {
+                    <tr class="text-muted fs-10">
+                      <td
+                        class="text-start font-sans ps-3 text-truncate d-flex align-items-center gap-1 text-white-50 position-sticky left-0 bg-dark"
+                        style="max-width: 85px"
+                      >
+                        <span
+                          [className]="
+                            'badge rounded-circle indicator-mini ' + obtenerClaseSemaforo(fac)
+                          "
+                        ></span>
+                        {{ fac.no_factura }}
+                      </td>
+                      <td class="text-white font-sans fw-bold">
+                        {{ fac.saldo | number: '1.0-0' }}
+                      </td>
+                      @for (col of columnasRangos; track col) {
+                        <td>
+                          {{
+                            obtenerRangoFactura(fac) === col ? (fac.saldo | number: '1.0-0') : '0'
+                          }}
+                        </td>
+                      }
+                    </tr>
+                  }
+                }
+              }
+            }
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+.fs-10 {
+  font-size: 0.65rem !important;
+}
+
+.btn-xs {
+  padding: 0.2rem 0.4rem;
+  font-size: 0.68rem;
+  border-radius: 0.15rem;
+}
+
+.table-sidebar-scroll {
+  max-height: calc(100vh - 280px);
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #495057;
+    border-radius: 2px;
+  }
+}
+
+.position-sticky.left-0 {
+  position: sticky !important;
+  left: 0;
+  z-index: 2;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.3);
+}
+
+.indicator-mini {
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+  flex-shrink: 0;
+}

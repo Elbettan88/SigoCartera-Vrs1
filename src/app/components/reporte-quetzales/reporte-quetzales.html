@@ -1,0 +1,25 @@
+<div class="card border-0 bg-transparent text-dark small font-sans p-1">
+  <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-1">
+    <span class="fw-bold text-success text-uppercase fs-8">📊 Resumen Marcas (GTQ)</span>
+    <span class="badge bg-success font-mono">Q {{ totalGeneralGTQ | number: '1.2-2' }}</span>
+  </div>
+
+  <div
+    class="list-group list-group-flush border rounded bg-white shadow-sm overflow-auto"
+    style="max-height: 250px"
+  >
+    @for (marca of resumenMarcas; track marca.nombre) {
+      <div class="list-group-item p-2 d-flex justify-content-between align-items-center fs-8">
+        <div class="text-truncate me-2" style="max-width: 60%">
+          <div class="fw-bold text-dark text-truncate">{{ marca.nombre }}</div>
+          <small class="text-muted font-mono fs-9">{{ marca.codigoInterno }}</small>
+        </div>
+        <span class="font-mono text-success fw-semibold">
+          Q {{ marca.saldo | number: '1.2-2' }}
+        </span>
+      </div>
+    } @empty {
+      <div class="p-3 text-center text-muted fs-8">No hay saldos vivos en GTQ</div>
+    }
+  </div>
+</div>

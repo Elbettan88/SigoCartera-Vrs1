@@ -1,0 +1,63 @@
+<div
+  class="modal fade show d-block"
+  tabindex="-1"
+  style="background: rgba(0, 0, 0, 0.5)"
+  role="dialog"
+>
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-success text-white py-2 px-3">
+        <h6 class="modal-title fw-bold m-0 fs-7">💰 Registrar Abono / Pago</h6>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="cerrar()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-3 font-sans small text-secondary">
+        <form (ngSubmit)="procesarAbono()">
+          <div class="mb-2 bg-light p-2 rounded border text-dark">
+            <div class="d-flex justify-content-between mb-1">
+              <span>Documento:</span>
+              <strong class="font-mono">{{ facturaActiva?.no_factura }}</strong>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Saldo Vivo:</span>
+              <strong class="text-danger font-mono">
+                {{ facturaActiva?.moneda }} {{ facturaActiva?.saldo | number: '1.2-2' }}
+              </strong>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold mb-1 text-dark"
+              >Monto a Abonar ({{ facturaActiva?.moneda }})*</label
+            >
+            <div class="input-group input-group-sm">
+              <span class="input-group-text fw-bold">{{
+                facturaActiva?.moneda === 'GTQ' ? 'Q' : '$'
+              }}</span>
+              <input
+                type="number"
+                class="form-control text-end fw-bold font-mono"
+                name="montoAbo"
+                required
+                step="0.01"
+                placeholder="0.00"
+                [(ngModel)]="montoAbono"
+              />
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+            <button type="button" class="btn btn-xs btn-outline-secondary px-3" (click)="cerrar()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-xs btn-success px-3 fw-bold">Aplicar Pago</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
